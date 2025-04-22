@@ -1,4 +1,6 @@
-import { test as base, BrowserContext, Page, expect } from '@playwright/test';
+/* eslint-disable no-await-in-loop */
+/* eslint-disable import/no-extraneous-dependencies */
+import { test as base, expect, Page } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 
@@ -15,26 +17,15 @@ if (!fs.existsSync(SESSION_STORAGE_PATH)) {
 interface AuthFixtures {
   getUserPage: (email: string, password: string) => Promise<Page>;
 }
-
-// Create custom test with authenticated fixtures
-export const test = base.extend<AuthFixtures>({
-  getUserPage: async ({ browser }, use) => {
-    const createUserPage = async (email: string, password: string) => {
-      const context = await browser.newContext();
-      const page = await context.newPage();
-
-      await authenticateWithUI(page, email, password, `session-${email}`);
-      return page;
-    };
-
-    await use(createUserPage);
-  },
-});
-
 /**
  * Authenticate using the UI with robust waiting and error handling
  */
-async function authenticateWithUI(page: Page, email: string, password: string, sessionName: string): Promise<void> {
+async function authenticateWithUI(
+  page: Page,
+  email: string,
+  password: string,
+  sessionName: string
+): Promise<void> {
   const sessionPath = path.join(SESSION_STORAGE_PATH, `${sessionName}.json`);
 
   // Try to restore session from storage if available
@@ -49,22 +40,11 @@ async function authenticateWithUI(page: Page, email: string, password: string, s
 
       // Check if we're authenticated by looking for a sign-out option or user email
       const isAuthenticated = await Promise.race([
-        page
-          .getByText(email)
-          .isVisible()
-          .then((visible) => visible),
-        page
-          .getByRole('button', { name: email })
-          .isVisible()
-          .then((visible) => visible),
-        page
-          .getByText('Sign out')
-          .isVisible()
-          .then((visible) => visible),
-        page
-          .getByRole('button', { name: 'Sign out' })
-          .isVisible()
-          .then((visible) => visible),
+        page.getByText(email).isVisible().then((visible) => visible),
+        page.getByRole('button', { name: email }).isVisible().then((visible) => visible),
+        page.getByText('Sign out').isVisible().then((visible) => visible),
+        page.getByRole('button', { name: 'Sign out' }).isVisible().then((visible) => visible),
+        // eslint-disable-next-line no-promise-executor-return
         new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 3000)),
       ]);
 
@@ -95,7 +75,7 @@ async function authenticateWithUI(page: Page, email: string, password: string, s
 
     // Click submit button and wait for navigation
     const submitButton = page.getByRole('button', { name: /sign[ -]?in/i });
-    if (!(await submitButton.isVisible({ timeout: 1000 }))) {
+    if (!await submitButton.isVisible({ timeout: 1000 })) {
       // Try alternative selector if the first one doesn't work
       await page.getByRole('button', { name: /log[ -]?in/i }).click();
     } else {
@@ -108,22 +88,11 @@ async function authenticateWithUI(page: Page, email: string, password: string, s
     // Verify authentication was successful
     await expect(async () => {
       const authState = await Promise.race([
-        page
-          .getByText(email)
-          .isVisible()
-          .then((visible) => ({ success: visible })),
-        page
-          .getByRole('button', { name: email })
-          .isVisible()
-          .then((visible) => ({ success: visible })),
-        page
-          .getByText('Sign out')
-          .isVisible()
-          .then((visible) => ({ success: visible })),
-        page
-          .getByRole('button', { name: 'Sign out' })
-          .isVisible()
-          .then((visible) => ({ success: visible })),
+        page.getByText(email).isVisible().then((visible) => ({ success: visible })),
+        page.getByRole('button', { name: email }).isVisible().then((visible) => ({ success: visible })),
+        page.getByText('Sign out').isVisible().then((visible) => ({ success: visible })),
+        page.getByRole('button', { name: 'Sign out' }).isVisible().then((visible) => ({ success: visible })),
+        // eslint-disable-next-line no-promise-executor-return
         new Promise<{ success: boolean }>((resolve) => setTimeout(() => resolve({ success: false }), 5000)),
       ]);
 
@@ -144,7 +113,10 @@ async function authenticateWithUI(page: Page, email: string, password: string, s
 /**
  * Helper to fill form fields with retry logic
  */
-async function fillFormWithRetry(page: Page, fields: Array<{ selector: string; value: string }>): Promise<void> {
+async function fillFormWithRetry(
+  page: Page,
+  fields: Array<{ selector: string; value: string }>
+): Promise<void> {
   for (const field of fields) {
     let attempts = 0;
     const maxAttempts = 3;
@@ -167,5 +139,20 @@ async function fillFormWithRetry(page: Page, fields: Array<{ selector: string; v
     }
   }
 }
+
+// Create custom test with authenticated fixtures
+export const test = base.extend<AuthFixtures>({
+  getUserPage: async ({ browser }, use) => {
+    const createUserPage = async (email: string, password: string) => {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+
+      await authenticateWithUI(page, email, password, `session-${email}`);
+      return page;
+    };
+
+    await use(createUserPage);
+  },
+});
 
 export { expect } from '@playwright/test';

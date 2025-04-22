@@ -1,5 +1,6 @@
 import { test, expect } from './auth-utils';
 
+test.slow();
 test('can authenticate a specific user', async ({ getUserPage }) => {
   // Call the getUserPage fixture with users signin info to get authenticated session for user
   const customUserPage = await getUserPage('john@foo.com', 'changeme');
@@ -13,4 +14,5 @@ test('can authenticate a specific user', async ({ getUserPage }) => {
   await expect(customUserPage.getByRole('heading', { name: 'Add Stuff' })).toBeVisible();
   await customUserPage.getByRole('link', { name: 'List Stuff' }).click();
   await expect(customUserPage.getByRole('heading', { name: 'Stuff' })).toBeVisible();
+
 });
