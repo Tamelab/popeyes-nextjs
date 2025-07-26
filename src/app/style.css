@@ -1,0 +1,76 @@
+/* General Page Styling */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fffdf9;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar Styling */
+.navbar {
+  background-color: white !important; /* white background */
+}
+
+.navbar-brand,
+.nav-link {
+  color: #FF5700 !important; /* Popeyes orange */
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  color: #cc4600 !important; /* Slightly darker orange on hover */
+}
+
+/* Navbar brand subtitle (smaller text below brand) */
+.navbar-brand .navbar-subtitle {
+  font-size: 0.65rem !important; /* smaller font size */
+  font-weight: normal;
+  color: #FF5700;
+  line-height: 1;
+  margin-top: -0.25rem;
+  display: block; /* place on new line */
+}
+
+/* Menu Section */
+#popeyes-menu {
+  background-color: #fff8f0;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.card-text {
+  color: #ff6b00;
+  font-size: 1.1rem;
+}
+
+.menu-image {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Footer Styling */
+.footer {
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  margin-top: 2rem;
+  font-size: 0.95rem;
+}

@@ -1,4 +1,5 @@
-// src/pages/popeyes.tsx
+'use client';
+
 import { Container, Row, Col, Card } from 'react-bootstrap';
 
 const menu = [
@@ -7,14 +8,14 @@ const menu = [
   { name: 'Cajun Fries', price: '$2.99', image: '/images/cajun-fries.jpg' },
 ];
 
-const PopeyesPage = () => (
+const PopeyesMenu = () => (
   <Container className="py-5">
     <h1 className="text-center mb-4">Popeyes Menu</h1>
     <Row>
-      {menu.map((item, index) => (
-        <Col md={4} key={index}>
+      {menu.map(item => (
+        <Col md={4} key={item.name}>
           <Card className="mb-4 shadow-sm">
-            <Card.Img variant="top" src={item.image} />
+            <Card.Img variant="top" src={item.image} alt={item.name} />
             <Card.Body>
               <Card.Title>{item.name}</Card.Title>
               <Card.Text>{item.price}</Card.Text>
@@ -26,4 +27,4 @@ const PopeyesPage = () => (
   </Container>
 );
 
-export default PopeyesPage;
+export default PopeyesMenu;
